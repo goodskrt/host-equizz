@@ -69,6 +69,15 @@ app.get('/', (req, res) => {
   res.send('API EQuizz v1.0 running...');
 });
 
+// Health check endpoint for Railway
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    service: 'EQuizz Backend API'
+  });
+});
+
 // Middleware d'erreurs
 app.use((err, req, res, next) => {
   console.error(err.stack);
