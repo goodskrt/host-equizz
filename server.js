@@ -35,36 +35,6 @@ try {
 
 app.use('/api', apiRoutes);
 
-// Test endpoint for frontend integration (no DB required)
-app.post('/api/auth/test-login', (req, res) => {
-  const { identifier, password } = req.body;
-  
-  console.log('🧪 Test login attempt:', { identifier, password });
-  
-  // Simple test credentials
-  if ((identifier === '2223i278' || identifier === 'test@test.com') && password === 'password123') {
-    res.json({
-      success: true,
-      data: {
-        user: {
-          id: '1',
-          email: 'test@test.com',
-          name: 'IGRE URBAIN LEPONTIFE',
-          role: 'student',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        token: 'test_jwt_token_123'
-      }
-    });
-  } else {
-    res.status(401).json({
-      success: false,
-      error: 'Identifiants invalides'
-    });
-  }
-});
-
 app.get('/', (req, res) => {
   res.send('API EQuizz v1.0 running...');
 });
@@ -88,8 +58,8 @@ const PORT = process.env.PORT || 5000;
 
 // Ne lancer le serveur que hors tests
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Serveur démarré sur le port ${PORT}`);
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Serveur démarré sur le port ${PORT} (toutes interfaces)`);
   });
 }
 

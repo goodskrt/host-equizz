@@ -315,45 +315,12 @@ const recognizeCard = async (req, res) => {
 };
 
 /**
- * ENDPOINT: TEST OCR
- * GET /api/ocr/test
- */
-const testOCR = async (req, res) => {
-  try {
-    console.log('🧪 Test de disponibilité OCR...');
-    
-    // Test simple avec Tesseract
-    await Tesseract.recognize(
-      Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64'),
-      'eng'
-    );
-    
-    res.json({
-      success: true,
-      message: 'Service OCR opérationnel',
-      tesseractVersion: Tesseract.version,
-      supportedLanguages: ['fra', 'eng']
-    });
-    
-  } catch (error) {
-    console.error('❌ Erreur lors du test OCR:', error);
-    
-    res.status(500).json({
-      success: false,
-      message: 'Service OCR non disponible',
-      error: error.message
-    });
-  }
-};
-
-/**
  * MIDDLEWARE D'UPLOAD
  */
 const uploadMiddleware = upload.single('image');
 
 module.exports = {
   recognizeCard,
-  testOCR,
   uploadMiddleware,
   // Fonctions utilitaires exportées pour les tests
   preprocessImage,

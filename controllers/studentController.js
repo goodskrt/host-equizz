@@ -3,21 +3,6 @@ const { Submission, SubmissionLog } = require('../models/Submission');
 const User = require('../models/User');
 const { AcademicYear, Class } = require('../models/Academic');
 
-// Mock simple pour l'analyse de sentiment (à remplacer par API Google Cloud)
-const analyzeSentimentMock = (text) => {
-  const positives = ['bon', 'excellent', 'bien', 'super', 'intéressant'];
-  const negatives = ['mauvais', 'nul', 'ennuyeux', 'rapide', 'incompréhensible'];
-  let score = 0;
-  
-  const words = text.toLowerCase().split(' ');
-  words.forEach(w => {
-    if (positives.includes(w)) score += 0.5;
-    if (negatives.includes(w)) score -= 0.5;
-  });
-  // Borner entre -1 et 1
-  return Math.max(-1, Math.min(1, score));
-};
-
 // @desc    Récupérer les quiz disponibles pour ma classe
 // @route   GET /api/student/quizzes
 exports.getMyQuizzes = async (req, res) => {
@@ -57,27 +42,10 @@ exports.submitQuiz = async (req, res) => {
     }
 
     // 2. Traitement IA sur les réponses ouvertes
-    let totalSentiment = 0;
-    let countOpen = 0;
-
-    const processedAnswers = answers.map(ans => {
-        // Ici on devrait vérifier le type de question via DB, 
-        // on suppose pour l'exemple qu'on détecte si c'est du texte long
-        if (typeof ans.value === 'string' && ans.value.length > 10) {
-            const score = analyzeSentimentMock(ans.value);
-            totalSentiment += score;
-            countOpen++;
-        }
-        return ans;
-    });
-
-    const finalSentiment = countOpen > 0 ? (totalSentiment / countOpen) : 0;
-
     // 3. Sauvegarder la soumission ANONYME
     await Submission.create({
         quizId,
-        answers: processedAnswers,
-        sentimentAnalysis: { score: finalSentiment, magnitude: 1 }
+        answers: answers
     });
 
     // 4. Sauvegarder le LOG (Lien étudiant-quiz)

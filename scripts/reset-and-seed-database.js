@@ -3,7 +3,7 @@
  * Combine tous les seeds nécessaires pour l'application
  */
 
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const mongoose = require('mongoose');
 
 // Modèles
