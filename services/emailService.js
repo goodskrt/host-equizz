@@ -2,17 +2,18 @@ const nodemailer = require('nodemailer');
 
 class EmailService {
   constructor() {
-    this.transporter = nodemailer.createTransport({
+    this.transporter = nodemailer.createTransporter({
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT),
-      secure: false, // true pour 465, false pour autres ports
+      secure: false, // false pour port 587 avec STARTTLS
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS
       },
       tls: {
         rejectUnauthorized: false
-      }
+      },
+      requireTLS: process.env.SMTP_STARTTLS_REQUIRED === 'true'
     });
   }
 
@@ -82,7 +83,7 @@ class EmailService {
       const transporter = require('nodemailer').createTransport({
         host: process.env.SMTP_HOST,
         port: parseInt(process.env.SMTP_PORT),
-        secure: false,
+        secure: false, // false pour port 587 avec STARTTLS
         auth: {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS
@@ -90,6 +91,7 @@ class EmailService {
         tls: {
           rejectUnauthorized: false
         },
+        requireTLS: process.env.SMTP_STARTTLS_REQUIRED === 'true',
         connectionTimeout: 10000, // 10 secondes
         greetingTimeout: 5000,     // 5 secondes
         socketTimeout: 10000       // 10 secondes
